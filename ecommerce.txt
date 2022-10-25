@@ -1,0 +1,197 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema e-commerce
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema e-commerce
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `e-commerce` DEFAULT CHARACTER SET utf8 ;
+USE `e-commerce` ;
+
+-- -----------------------------------------------------
+-- Table `e-commerce`.`users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-commerce`.`users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_name` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `user_name_UNIQUE` (`user_name` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `e-commerce`.`products`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-commerce`.`products` (
+  `id` INT NOT NULL,
+  `products_name` VARCHAR(45) NOT NULL,
+  `users_id` INT(45) NOT NULL,
+  `products_price` FLOAT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `users_id_idx` (`users_id` ASC) VISIBLE,
+  CONSTRAINT `users_id`
+    FOREIGN KEY (`users_id`)
+    REFERENCES `e-commerce`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `e-commerce`.`order`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-commerce`.`order` (
+  `id` INT NOT NULL,
+  `user_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `user_id_idx` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `user_order_id`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `e-commerce`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `e-commerce`.`categories`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-commerce`.`categories` (
+  `id` INT NOT NULL,
+  `name` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `e-commerce`.`products_categories`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-commerce`.`products_categories` (
+  `id` INT NOT NULL,
+  `products_id` INT NULL,
+  `categories_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `products_id_idx` (`products_id` ASC) VISIBLE,
+  INDEX `categories_id_idx` (`categories_id` ASC) VISIBLE,
+  CONSTRAINT `products_id`
+    FOREIGN KEY (`products_id`)
+    REFERENCES `e-commerce`.`products` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `categories_id`
+    FOREIGN KEY (`categories_id`)
+    REFERENCES `e-commerce`.`categories` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `e-commerce`.`order_detail`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `e-commerce`.`order_detail` (
+  `id` INT NOT NULL,
+  `products_id` INT NOT NULL,
+  `order_id` INT NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `order_id_idx` (`order_id` ASC) VISIBLE,
+  CONSTRAINT `order_id`
+    FOREIGN KEY (`order_id`)
+    REFERENCES `e-commerce`.`order` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `products_oreder_id`
+    FOREIGN KEY (`products_id`)
+    REFERENCES `e-commerce`.`products` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+INSERT INTO users(id, user_name, email) 
+VALUES 
+(1, "Federico", "federico@gmail.com"),
+(2, "Tomas", "tomas@gmail.com"),
+(3, "Miguel", "miguel@gmail.com"),
+(4, "Daniel", "daniel@gmail.com"),
+(5, "Sergio", "sergio@gmail.com");
+
+INSERT INTO products(id, products_name, users_id, products_price) 
+VALUES 
+(1, "Monitor", 1, 200),
+(2, "CPU", 2, 400),
+(3, "Teclado", 3, 100),
+(4, "Mouse", 4, 90),
+(5, "Parlantes", 5, 130);
+
+INSERT INTO order(id, users_id) 
+VALUES 
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+INSERT INTO order_detail(id, products_id, order_id) 
+VALUES 
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3),
+(4, 4, 4),
+(5, 5, 5);
+
+INSERT INTO categories(id, name) 
+VALUES 
+(1, Oficina),
+(2, Gamer);
+
+UPDATE products 
+SET products_name = "Monitor WideScreen" 
+WHERE ID = 1;
+
+UPDATE products 
+SET products_price = 50 
+WHERE ID = 4;
+
+SELECT * FROM products 
+WHERE products_price > 20;
+
+SELECT * FROM products 
+ORDER BY products_price DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
